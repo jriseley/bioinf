@@ -1,4 +1,3 @@
-
 def PatternCount(Text, Pattern):
     """Count all the (possibly overlapping) substrings in a string.
     The Python built-in "count" function is not suitable, because it does
@@ -6,7 +5,7 @@ def PatternCount(Text, Pattern):
 
     Args:
         Text (str): The string
-        Pattern (str): The substring to count 
+        Pattern (str): The substring to count
 
     Raises:
         ValueError: Pattern string must be less than or equal to the length of the string
@@ -24,19 +23,19 @@ def PatternCount(Text, Pattern):
     count = 0
 
     # Naive search: loop over the text string and check each slice of the array for the pattern
-    for i in range(tlen-plen+1):
-        slice = Text[i:(i+plen)]
+    for i in range(tlen - plen + 1):
+        slice = Text[i : (i + plen)]
 
         # string comparison
         if slice == Pattern:
             count = count + 1
 
-    return count 
-    
+    return count
+
 
 def FrequencyMap(Text, k):
 
-    """Returns a frequency map of a string. 
+    """Returns a frequency map of a string.
     A frequency map associates substrings of a string to its number of occurrences in the string.
 
     Args:
@@ -44,20 +43,21 @@ def FrequencyMap(Text, k):
         k ([int]): The length of k-mer to search for
 
     Returns:
-        [dict]: A set of key, value pairs where 
-        the keys are the set of unique substrings of length k in Text, 
+        [dict]: A set of key, value pairs where
+        the keys are the set of unique substrings of length k in Text,
         and the values are the number of times this substring occurs in the Text.
     """
 
     freq = {}
     n = len(Text)
-    for i in range(n-k+1):
-        Pattern = Text[i:i+k]
+    for i in range(n - k + 1):
+        Pattern = Text[i : i + k]
         freq[Pattern] = 0
 
     for pattern in freq.keys():
         freq[pattern] = PatternCount(Text, pattern)
     return freq
+
 
 def FrequentWords(Text, k):
     """Return the most frequently-occurring word(s) of length k in a string
@@ -67,7 +67,7 @@ def FrequentWords(Text, k):
         k (int): The length of words to search for
 
     Returns:
-        [list(str)]: The most frequently occurring words. 
+        [list(str)]: The most frequently occurring words.
         The length of this list will either be 1 in the case of a unique most frequent word,
         or more than 1 in the case of multiple words that occur with the same frequency.
     """
@@ -83,21 +83,23 @@ def FrequentWords(Text, k):
 
 def validNucleotide(Pattern):
 
-    full_nucleotide_set = {'A','C','G','T'}
+    full_nucleotide_set = {"A", "C", "G", "T"}
     pattern_dictionary = set(Pattern.upper())
 
     if pattern_dictionary.issubset(full_nucleotide_set):
-        return True 
+        return True
     else:
-        return False 
+        return False
+
 
 def Reverse(Pattern):
     return Pattern[::-1]
 
+
 def Complement(Pattern):
     """Computes a complementary nucleotide.
     Nucleotides A and T are complements of each other,
-    as are C and G. 
+    as are C and G.
 
     Args:
         Pattern (str): A nucleotide string
@@ -110,13 +112,16 @@ def Complement(Pattern):
     """
     Pattern = Pattern.upper()
     if not validNucleotide(Pattern):
-        raise ValueError("Pattern is not a valid nucleotide string. A nucleotide string may only contain {A,C,G,T}")
+        raise ValueError(
+            "Pattern is not a valid nucleotide string. A nucleotide string may only contain {A,C,G,T}"
+        )
 
-    comp_table = {"A":"T","T":"A","C":"G","G":"C"}
+    comp_table = {"A": "T", "T": "A", "C": "G", "G": "C"}
     complement = ""
-    for i in range(len(Pattern)):
-        complement = complement + comp_table[Pattern[i]]
+    for c in Pattern:
+        complement = complement + comp_table[c]
     return complement
+
 
 def ReverseComplement(Pattern):
     """Compute the reverse complement of a nucleotide string
@@ -128,7 +133,38 @@ def ReverseComplement(Pattern):
         str: The reverse complement of the string
     """
 
-    Pattern = Reverse(Pattern) # reverse all letters in a string
-    Pattern = Complement(Pattern) # complement each letter in a string
+    Pattern = Reverse(Pattern)  # reverse all letters in a string
+    Pattern = Complement(Pattern)  # complement each letter in a string
     return Pattern
 
+
+def PatternMatching(Pattern, Genome):
+    """Returns the locations of a pattern within a genome, as a list of array indices.
+
+    Args:
+        Pattern (str): The pattern to find
+        Genome (str): The genome to search
+
+    Raises:
+        ValueError: The length of the genome must exceed the length of the pattern
+
+    Returns:
+        [list(int)]: A list of indices where the patterns begin in the genome
+    """
+    glen = len(Genome)
+    plen = len(Pattern)
+
+    if plen > glen:
+        raise ValueError("Pattern length must not exceed text length")
+
+    positions = []
+
+    # Naive search: loop over the text string and check each slice of the array for the pattern
+    for i in range(glen - plen + 1):
+        slice = Genome[i : (i + plen)]
+
+        # string comparison
+        if slice == Pattern:
+            positions.append(i)
+
+    return positions
